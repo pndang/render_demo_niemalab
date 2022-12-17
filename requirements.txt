@@ -4,3 +4,4 @@ gunicorn
 datetime
 numpy
 seaborn
+dash_bootstrap_components
