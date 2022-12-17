@@ -65,7 +65,8 @@ def calculate_rolling_avg(dataframe):
   return None
 
 # Importing and cleaning dataset
-df = pd.read_csv('covid19variants.csv')
+if 'df' not in locals():
+    df = pd.read_csv('covid19variants.csv')
 
 # ------------------------------------------------------------------------------
 
@@ -91,6 +92,7 @@ app.layout = dbc.Container([
       dcc.Dropdown(
         id='mydropdown',
         options={x: x for x in df.variant_name.unique()},
+        value='all',
         multi=True,
         placeholder='Select variants'
       )], width=6)
@@ -182,7 +184,10 @@ def update_output(start_date, end_date, dropdown_val, palette):
     if len(string_prefix) == len('You have selected: '):
         return 'Select a date to see it displayed here'
     if plot_ready and dropdown_val != None:
-        data = df.loc[df['variant_name'].isin(dropdown_val)]
+        if dropdown_val == 'all':
+            data = df.copy()
+        else:
+            data = df.loc[df['variant_name'].isin(dropdown_val)]
         date_col = 'date'
         variant_col = 'variant_name'
 
@@ -236,4 +241,3 @@ def update_output(start_date, end_date, dropdown_val, palette):
 if __name__ == '__main__':
     app.run_server(debug=True)
     # app.run_server(debug=True, dev_tools_ui=None, dev_tools_props_check=None)
-
